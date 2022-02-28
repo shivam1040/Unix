@@ -1,0 +1,337 @@
+PATH=$PATH:~/bin, used to declare system variable path to bin folder in root directory
+
+mv tn bin, moves tn to bin folder
+
+avoid giving names to script which are already present in shell as an executable such as ls mkdir etc. This can be avoided by putting script in starting of path but not recommended
+
+#!/usr/bin/env bash, used for portability, this finds the bash location on the user's path if used insted of hashbang but doesn't work always since this gives prioriy to local bash first(any installed by user) and then the global bash
+
+type ls, checks if ls is already an executable in shell or not and to avoid name conflict while naming script
+
+rm $a, removes the file whose name is stored in variable a, if there are space separated names in a then rm tries removing files according to those separated names, a="1.txt 2.txt", will remove 1.txt and 2.txt
+
+ls a.txt, displays information about file
+
+echo $a, if a is not defined then simply echoes space
+
+a="$b, $c", means a has two values of variable b and c in it
+
+spaces are taken as command and gives error when variables are assigned as x = 5 and not x=5
+
+only letters numbers and underscore for variable, and first char should be letter and avoid using pre defined variable name unless you don't want to override
+
+read -p "enter" note, displays prompt enter, gets an input from user and stores in note
+
+echo "a" >> ~/${a}b.txt, stores a in file name starting with content of variable a and ending with b.txt
+
+echo \'$a\', this displays content of variable a inside quotes
+
+echo a>>"$a", stores the echoed content in variable a even if it has names with spaces, without quotes filename will consider contents after spaces as arguements
+
+a="${HOME}/b.txt" since quotes excape tilde(~) so home pre defined variable is used
+
+#!/bin/bash -x, used for debugging
+
+to debug from custome line add set -x before that line and add set +x after the line you want debugging to end
+
+if testcode; then cmd; else cmd; fi, way to use if else in cmdline
+
+if [[ $a ]], checks if a is empty
+
+if [[ $a = "b" ]], do ensure to put spaces around equals else condition always true
+
+more, used for displaying files accoding to choice
+
+mv is different from rename since rename can rename many files at once
+
+id, gets the user id
+
+locate vs find, find finds file in filsystem while locate in database
+
+df, diskspace of mounted directory in blocks
+
+ssh, create secure remote connection
+
+host, display ip and dns for given domain name
+
+cut, selects specific part of file
+
+comm, compare two files
+
+export EDITOR=aone, this command speciefies the system editor variable to aone application
+
+$#, contains numbe of arguements recieved, useful with comparison operators
+
+$?, contains exit status for last command
+
+${#var},returns length of string in var
+
+ls -A1 ~\ | wc -l, gets the file in home directory, pipes it to word count and retutns numbe of files
+
+echo "h" -n, supresses newline print by echo
+
+-e with echo allows use of escape sequences such as \t \b etc. and these aren't portable to non bash
+
+printf "hello %s" $USER, prints hello username
+
+printf "%s\n" $a $b $c, prints value of variables in newline
+
+printf "%20s |%20s\n" $(ls), prints directory contents in below format
+a.txt     |b.txt
+....	  |...
+
+printf -v  g "hello %s" $USER, stores the output of printf in variable g
+
+read, this will get input from user and store in var REPLY
+
+read x -n -N, -n is for stop reading when newline and -N is for stop when specified char limit reached
+
+read -s, doesn't show output, used for passwords
+
+read -r, disallows escape sequenced and line continuation
+
+read x y, for input "1 2 3" gives 1 for x and 2 3 for y
+
+read a b, takes input for two variables a and b
+
+if [[ $a = [Yy] ]], checks if a is Y or y
+
+read -n 1, 1 is for recieving only single character
+
+IFS=: read a b; 1:2, this is known as delimeter for accepting inputs, here the delimiter is changed from white space to colon
+so if 3:4 is given for 'read a b', it'll be stored as 3 and 4 in a and b respectively, IFS change is only valid for next one command
+
+dev null is also called bitbucket or trash can for bits
+
+grep m < a.txt, input redirection
+
+ls > a.txt, output redirection
+
+ls | grep x, ls output redirection to input for command grep
+
+cmd 2 > /dev/null, 2 is for redirectiong to error stream and all error messages are discareded since sent to dev null
+by default the number is 1, standard output
+
+cmd >&2 /dev/null, redirects standard output to standard error, similar to 1>&2 ,amprsand is used to ensure that terminal doesn't detect 2 as some filename or command insted of stream 2
+
+cmd > a.txt 2>& 1, cmd output to a and error produced by cmd is redirected to a which is standard output
+
+cmd < a > o, input from a to cmd and output to o,
+>o cmd <a, same as above
+
+2>&1 >a cmd, error of cmd to stdout(dispalyed in terminal) and output of cmd to a
+
+cmd >a 2>a , this will rewrite a with only errors
+
+a=$(($b % 10)), used for performing arithmetic operations
+
+for i in a b c d; do...; done, this considers a b c d as list of words if a b c d is put in quotes then it is considered as a single word
+
+touch {a..h}.txt, creates file from a.txt to h.txt 
+
+for a in *"$b", means for all files ending with b value
+ab=$(basename "$a" "$b") concatenates a with b via "."
+
+case $a in
+	*.txt|*.h) , pipe is used as OR here
+		b=1
+	...
+	...
+esac
+
+{ cmd1; cmd2; cmd3; }, this can be used with if/while, similar to and/or, this causes io redirection for the whole group and returns the status of last cmd in the group
+
+mkdir a && cd a, second cmd will only execute if first is successful
+
+mkdir a || cd a, second cmd will only execute if first is failure
+
+[[ $a ]] echo "b" >&2 && exit 1, this will always exit, if a is not empty the exit 1 executes elseif a is empty then echo is executed which is always true and again program exits
+[[ $a ]] || { echo "b" >&2; exit 1;} ,way to do what is proposed above, if a is empty then only b is echoed and status 1 is returned
+
+while read -r || [[ $REPLY ]]; do , if reply isn't checked for presence of data then last recieved line won't be printed
+	echo "$REPLY"
+done
+
+[[ $# -ne 2 ]] && { echo "b" >&2; exit 1;} ,replacement to if then statement
+
+declare -p a, prints the variable attributes of a
+
+declare -i a, a will only hold integers, when string is given to a then it gets set to zero
+
+unset +i a, removes integer only attribute
+
+a="1+2"
+echo a, this prints 3 if -i is set for a
+
+let a=100/2, valid in bash
+(( ++a )), valid too
+(( p=x/100 )), valid and a command 
+(( a=$(ls | wc -l)*10 )), get word count from ls, multiply by 10 and store in a
+
+$((x/100)), not a command but rather substitution, terminal will throw error if this alone is executed
+
+x=010, leading zeroes will make shell consider x as octal number not decimal
+
+declare -i -r a=0, means that a is variable and read only
+
+export var="z", used to make variable available to the subproccesses
+declare -x var="value", same as above
+while exporting attributes such as -r ,-i etc. aren't exported
+
+to call another script in a script just give location to that script
+
+tilde within quotes isn't expanded or executed
+
+one can use bashrc file to initiallize global variables/export them for use to other scripts in same directory
+
+${a[@]} or ${x[*]} to get all values of list, @ is to get item by item and * is for all values in a single string
+
+declare -a x, declaring array x, arrays can't be exported since they're attribute
+
+x=(a b c d), initiallizing x
+
+${#a[@]}, size of array
+
+${!a[@]}, get all indices of array
+
+declare -A x, in this type of array indexes are names not numbers
+
+declare -p a, shows all the values with their indices
+
+"$a" will give all values of array in form of individual string and if any arguement is in quotes with space then it'll show as single arguement not separated
+
+"$*" gives all values but in a single string
+
+$0 prints the scriptname, basically absolute path or relative path when some path is provided
+
+ln -s a sn, creates a link to a with alias sn
+./sn is now same as ./a
+
+$2 -> $1, means that areguement at two is shifted to one and arguement size decreased by 1
+
+shift 3, does shifting by first three arguements
+
+getopts is used for providing options from a list or string to an arguement/command
+
+getsopts options a, basic syntax for getopts where options is set of options for a, and everytime getopts is called next option is added with a, when no more options left getopts return false
+ab will be considered as -a, -b
+a:b means only a can take an arguement or get used as option with arguement but not b, so one can append : to options that take an arguement
+
+while getopts "b:s:r" a; do
+	case $a in
+		b)
+			...
+			;;
+		s)
+			...
+			;;
+		\?), this is used for cases when an irrelevant arguement is given
+			;;
+	esac
+done
+shift $(( OPTIND -1 )), this gives the index of the next option that getopts was gonna handle, and -1 is to ensure the value gets shifted to $1
+
+${OPTARG}, this gives the arguement taken by an option
+
+script -x-y a b, this means script has two options and two arguements
+
+script -x--y a, here x and y are options for a and double dash means end of option or processing by getopts
+
+getopts handles by default errors in non silent mode
+if anything goes wrong then NAME variable holds ?
+
+getopts ":b:s:r" a, doing so means getopts will handle error in silent mode, no printing/showing of errors
+when an unknown option is recieved, getopts put ? in NAME and actual recieved option in OPTARG
+when no arguement for option is recieved, getopts puts : in NAME and actual recieved option in OPTARG
+
+if a script has function named then it'll override ls command, functions can be redirected too
+
+if a functions returns something then that value is in ?, basically $?
+above return can also be gotten by $(func arguements), func is function name and arguements is arguements it requires
+
+[[ a == [bB]* ]], checks if a starts with lower or uppercase b
+
+without return statement, func returns status of last statement
+
+export-f func, way to export function
+
+for(( i=0; i<$1; i++ )), i<$1 would mean length of string
+
+cat<<END
+....
+END, this means text between ENDs will be input for cat
+
+[[ a =~ ^[0-9]+$ ]], checks if a is number
+
+declare -i a=0
+count(){
+a++
+}
+$*|count
+echo $a, here the output will be always zero since the command after pipe gets executed in a subshell and global variables aren't available to it
+
+${#a}, gives length of a
+
+${a#pattern}, removes shortest matching patttern in a from start(checks at 0th index)
+
+${a##pattern}, same as above but removes longest possible match
+
+${a%pattern}, remmoves shortest from end(checks at length-1)
+
+${a%%pattern}, removes longest from end
+
+${a#*/}, removes first / along with all the leading characters
+
+${a/pattern/b}, first pattern match in a and replace that match with b
+
+${a//pattern/b}, same as above but for all the matches
+
+${a/%pattern/b}, pattern search from end
+
+$(a/[bc]/d}, removes b an c in a with d, for only first occurence
+
+$(a//[bc]/d}, same as above but for all
+
+touch {1..3}.txt, creates 3 text files named 1.txt 2.txt etc.
+
+${a:-b}, checks if a is empty/unset, if true then "b" is evaluated to a
+
+${a-b}, same as above but only checks for unset variable
+
+${a:=b}, checks for empty/unset and if true evaluates and gets assigned to b
+
+${a=b}, same as last line but only for unset
+
+in bash single equal sign as same as double equal sign for equality check
+
+[[ $a = "[0-9]* ]], this won't match pattern rather match patterns a string
+
+BASH_REMATCH[], system array which contains the the matching characters from every check made on any string
+
+rm -- -l.txt, -- is used to tell that there'as no option and -l.txt is actual filename
+
+using hashbang, starts bash as subprocess and exec permission needs to be set
+
+without hashbang one can access script as bash -x a, here -x is for debugging and a is script
+
+source a or .a, this imports the script a in shell and all function/variables are available for other tasks in the shell
+
+a &, this puts the script a in background, disconnects from interactive session and suspends if it tries to get input from terminal
+
+nohup a, this keeps the script even when terminal exits, used in remote sessions mostly, often such scripts are put in background
+
+nice a, this runs the script a with lower priority
+
+last three commands can be combined as per needs, "nohup nice a &"
+
+exec >log, this is used in scripts and redirects script output to logfile
+
+at and cron are used to run script at specfifc time and regular interval respectively
+
+set -x, sets the behaviour of script, -x prints arguements when executed, -u gives error when uninitiallized variable used, -n read commands but not execute etc.
+
+shopt -s dotglob,include hidden files in pathname expasion, extglob for extended pattern matching etc.
+
+chmod u+x a.txt // u means user a means all
+
+echo $* > ~/a.txt, $* is wildcard for rewriting entire file with all arguements  in one line

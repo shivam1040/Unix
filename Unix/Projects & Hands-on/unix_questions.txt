@@ -1,0 +1,6 @@
+Q1. Write a program to check weather the number is even or odd?
+Q2. Write a program to chech weather the number is palindrome number or not?
+Q3. Write a program to print factorial of a given number
+Q4. Write a program to print numbers which are divisible by 5 but not by 3 between 1 and 200
+Q5. In Command line arguments pass two number and perform its addition, subtration, multiplication,
+    division, remainder 
